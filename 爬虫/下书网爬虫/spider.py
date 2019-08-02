@@ -11,6 +11,7 @@ def get_page_title_and_detial(session, target_url):
     return (r.html.xpath("//div[@class='atitle']/h1")[0].text, r.html.xpath("//div[@class='zw']")[0].text)
 
 
+# 需要改成录入数据库
 book_target_url_data_list = []  # [(url, (start, end)), ...]
 #启动
 session = HTMLSession()
@@ -18,8 +19,13 @@ url = 'https://www.shutxt.com/mz/27757/'
 page_num = 1424130
 def get_book_target_url_range(session, url, page_num, book_target_url_data_list, start_num):
     #获取
-    target_url = url + '{}.html'
-    r = session.get(target_url.format(page_num))
+    target_url = url + '{}.html'.format(page_num)
+    r = session.get(target_url)
+
+    article_title_and_content = get_page_title_and_detial(session, target_url)
+    with open('{}.txt'.format(article_title_and_content[0]), 'w', encoding='UTF-8') as f:
+        f.writelines(article_title_and_content[1])
+        print('写入一篇')
 
     is_next_page_list = r.html.xpath("//div[@class='np']/a/text()")  # 上一章以及下一章所在列表
 
